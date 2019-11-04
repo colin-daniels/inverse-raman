@@ -15,10 +15,8 @@ class RawRaman:
         self.name = name
         self.width = w
         self.length = l
-        self.raman = np.hstack((
-            frequency,
-            intensity,
-        ))
+        self.frequency = frequency
+        self.intensity = intensity
 
 
 def load_raman_pkl(path: str) -> tp.Generator[RawRaman, None, None]:
