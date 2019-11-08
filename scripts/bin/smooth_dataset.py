@@ -23,12 +23,13 @@ from scripts.io import load_smoothed_dataset
               show_default=True)
 @click.argument("input_dataset")
 def main(
-    min_freq: float,
-    max_freq: float,
-    points: int,
-    width: float,
-    input_dataset: str,
-    output: str,
+        min_freq: float,
+        max_freq: float,
+        points: int,
+        width: float,
+        num_acoustic: int,
+        input_dataset: str,
+        output: str,
 ):
     """Load a pkl Raman dataset, smooth it in parallel, and output to npz."""
     x, y = load_smoothed_dataset(
@@ -37,6 +38,7 @@ def main(
         max_freq=max_freq,
         points=points,
         width=width,
+        num_acoustic=num_acoustic,
         parallel=os.cpu_count(),
     )
     np.savez_compressed(output, x=x, y=y)

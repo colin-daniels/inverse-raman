@@ -50,6 +50,7 @@ def load_smoothed_dataset(
         max_freq: float,
         points: int,
         width: float,
+        num_acoustic: int,
         parallel: tp.Optional[int] = None,
 ) -> tp.Tuple[np.ndarray, np.ndarray]:
     from multiprocessing.pool import Pool
@@ -60,6 +61,7 @@ def load_smoothed_dataset(
             'max_freq': max_freq,
             'points': points,
             'width': width,
+            'num_acoustic': num_acoustic,
         }, entry) for entry in load_raman_pkl(path)])
 
     return np.array([x for x, _ in mapped]), \

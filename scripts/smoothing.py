@@ -7,6 +7,7 @@ def smooth_raman_json(
         max_freq: float,
         points: int,
         width: float,
+        num_acoustic: int,
         filename: str,
 ) -> np.ndarray:
     frequency = []
@@ -25,6 +26,7 @@ def smooth_raman_json(
         max_freq,
         points,
         width,
+        num_acoustic,
         frequency=np.array(frequency),
         intensity=np.array(intensity),
     )
@@ -35,9 +37,19 @@ def smooth_raman(
         max_freq: float,
         points: int,
         width: float,
+        num_acoustic: int,
         frequency: np.ndarray,
         intensity: np.ndarray,
 ) -> np.ndarray:
+    assert 0 <= num_acoustic <= 6
+    assert points > 0
+
+    # Skip the acoustic modes, which are not Raman active (but can have
+    # non-zero Raman intensity due to numerical issues as their frequencies
+    # are close to zero)
+    intensity = intensity[num_acoustic:]
+    frequency = frequency[num_acoustic:]
+
     # Only select peaks within the given frequency range
     peaks_in_range = (min_freq <= frequency) & (frequency <= max_freq)
     intensity = intensity[peaks_in_range]
