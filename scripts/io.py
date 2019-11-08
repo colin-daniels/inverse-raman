@@ -11,8 +11,8 @@ class RawRaman:
         name: str,
         w: int,
         l: int,
-        frequency: np.array,
-        intensity: np.array,
+        frequency: np.ndarray,
+        intensity: np.ndarray,
     ):
         self.name = name
         self.width = w

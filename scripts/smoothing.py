@@ -2,7 +2,13 @@ import numpy as np
 import json
 
 
-def smooth_raman_json(min_freq, max_freq, points, width, filename):
+def smooth_raman_json(
+        min_freq: float,
+        max_freq: float,
+        points: int,
+        width: float,
+        filename: str,
+) -> np.ndarray:
     frequency = []
     intensity = []
     file = json.loads(open(filename).read())
@@ -24,7 +30,14 @@ def smooth_raman_json(min_freq, max_freq, points, width, filename):
     )
 
 
-def smooth_raman(min_freq, max_freq, points, width, frequency, intensity):
+def smooth_raman(
+        min_freq: float,
+        max_freq: float,
+        points: int,
+        width: float,
+        frequency: np.ndarray,
+        intensity: np.ndarray,
+) -> np.ndarray:
     # Only select peaks within the given frequency range
     peaks_in_range = (min_freq <= frequency) & (frequency <= max_freq)
     intensity = intensity[peaks_in_range]
