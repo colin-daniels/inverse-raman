@@ -30,27 +30,37 @@ def load_raman_pkl(path: str) -> tp.Generator[RawRaman, None, None]:
                 break
 
 
+def _smooth_dataset(
+        args: tp.Tuple[tp.Dict[str, tp.Any], RawRaman]
+) -> tp.Tuple[np.ndarray, np.ndarray]:
+    smoothing_kwargs, data = args
+
+    print(data.name)
+    return smooth_raman(
+        **smoothing_kwargs,
+        frequency=data.frequency,
+        intensity=data.intensity,
+    ), np.array([data.width, data.length])
+
+
+# load and smooth a dataset
 def load_smoothed_dataset(
         path: str,
         min_freq: float,
         max_freq: float,
         points: int,
-        width: float
-):
-    X = []
-    y = []
+        width: float,
+        parallel: tp.Optional[int] = None,
+) -> tp.Tuple[np.ndarray, np.ndarray]:
+    from multiprocessing.pool import Pool
 
-    for entry in load_raman_pkl(path):
-        print(entry.name)
-        smoothed = smooth_raman(
-            min_freq=min_freq,
-            max_freq=max_freq,
-            points=points,
-            width=width,
-            frequency=entry.frequency,
-            intensity=entry.intensity,
-        )
-        X.append(smoothed)
-        y.append([entry.width, entry.length])
+    with Pool(processes=parallel) as pool:
+        mapped = pool.map(_smooth_dataset, [({
+            'min_freq': min_freq,
+            'max_freq': max_freq,
+            'points': points,
+            'width': width,
+        }, entry) for entry in load_raman_pkl(path)])
 
-    return np.array(X), np.array(y)
+    return np.array([x for x, _ in mapped]), \
+        np.array([y for _, y in mapped])
